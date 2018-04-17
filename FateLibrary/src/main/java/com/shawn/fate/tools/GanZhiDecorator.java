@@ -1,4 +1,6 @@
-package com.shawn.fate.model;
+package com.shawn.fate.tools;
+
+import com.shawn.fate.model.GanZhi;
 
 public class GanZhiDecorator {
 
