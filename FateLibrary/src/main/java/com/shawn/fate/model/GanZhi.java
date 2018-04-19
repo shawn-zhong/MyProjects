@@ -1,6 +1,8 @@
 package com.shawn.fate.model;
 
 import com.shawn.fate.calendar.CalendarBase;
+import com.shawn.fate.constance.Gan;
+import com.shawn.fate.constance.Zhi;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDate;
@@ -8,8 +10,8 @@ import java.time.LocalDateTime;
 
 public class GanZhi {
 
-    private int _gan;       // 天干
-    private int _zhi;       // 地支
+    private Gan _gan;       // 天干
+    private Zhi _zhi;       // 地支
     private int _ganzhi;    // 天干地址
 
     /**
@@ -21,8 +23,8 @@ public class GanZhi {
         if (ganzhi < 0 || ganzhi >= 60)
             throw new InvalidParameterException();
 
-        _gan = ganzhi % 10;
-        _zhi = ganzhi % 12;
+        _gan = Gan.values()[ganzhi % 10];
+        _zhi = Zhi.values()[ganzhi % 12];
     }
 
     /**
@@ -35,8 +37,8 @@ public class GanZhi {
         if (gan < 0 || gan > 9 || zhi < 0 || zhi > 11)
             throw new InvalidParameterException();
 
-        _gan = gan;
-        _zhi = zhi;
+        _gan = Gan.values()[gan];
+        _zhi = Zhi.values()[zhi];
 
         int val = gan*6 - zhi*5;
         _ganzhi = val < 0 ? val+60 : val;
@@ -86,7 +88,7 @@ public class GanZhi {
 
         try {
             GanZhi dateGanZhi = GanZhi.ofDate(LocalDate.of(time.getYear(), time.getMonthValue(), time.getDayOfMonth()));
-            int dayGan = dateGanZhi._gan;
+            int dayGan = dateGanZhi._gan.getIntVal();
 
             int startGan = (dayGan % 5) * 2;        // 早子时的天干序号
             int zhi = (time.getHour() + 1) / 2;
@@ -106,10 +108,10 @@ public class GanZhi {
      * @param hour
      * @return
      */
-    public static GanZhi ofHour(int dayGan, int hour) {
+    public static GanZhi ofHour(Gan dayGan, int hour) {
 
         try {
-            int startGan = (dayGan % 5) * 2;        // 早子时的天干序号
+            int startGan = (dayGan.getIntVal() % 5) * 2;        // 早子时的天干序号
             int zhi = (hour + 1) / 2;
             int gan = (startGan + zhi) % 10;
 
