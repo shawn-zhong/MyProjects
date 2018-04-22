@@ -14,6 +14,15 @@ public class GanZhi {
     private Zhi _zhi;       // 地支
     private int _ganzhi;    // 天干地址
 
+
+    public Gan getGan() {
+        return _gan;
+    }
+
+    public Zhi getZhi() {
+        return _zhi;
+    }
+
     /**
      * 根据干支序号（0.。59）得到干支结构
      * @param ganzhi   干支序号： 0...59
@@ -25,6 +34,7 @@ public class GanZhi {
 
         _gan = Gan.values()[ganzhi % 10];
         _zhi = Zhi.values()[ganzhi % 12];
+        _ganzhi = ganzhi;
     }
 
     /**
@@ -45,7 +55,7 @@ public class GanZhi {
     }
 
     /**
-     * 计算包含春节那一年的天干地址
+     * 计算某一年的天干地支（以交立春为一年）
      * @param year
      * @return
      */
@@ -88,13 +98,7 @@ public class GanZhi {
 
         try {
             GanZhi dateGanZhi = GanZhi.ofDate(LocalDate.of(time.getYear(), time.getMonthValue(), time.getDayOfMonth()));
-            int dayGan = dateGanZhi._gan.getIntVal();
-
-            int startGan = (dayGan % 5) * 2;        // 早子时的天干序号
-            int zhi = (time.getHour() + 1) / 2;
-            int gan = (startGan + zhi) % 10;
-
-            return new GanZhi(gan, zhi);
+            return ofHour(dateGanZhi.getGan(), time.getHour());
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -111,9 +115,11 @@ public class GanZhi {
     public static GanZhi ofHour(Gan dayGan, int hour) {
 
         try {
-            int startGan = (dayGan.getIntVal() % 5) * 2;        // 早子时的天干序号
-            int zhi = (hour + 1) / 2;
+            int startGan = 2 * (dayGan.getIntVal() % 5) % 10;         // 早子时的天干序号
+            int zhi = (hour + 1) / 2;     // 包含早子時晚子時
+
             int gan = (startGan + zhi) % 10;
+            zhi %= 12;
 
             return new GanZhi(gan, zhi);
         }catch (Exception e) {
@@ -124,7 +130,7 @@ public class GanZhi {
     }
 
     /***
-     * 计算某个节的干支 (需要测试)
+     * 计算某个节的干支
      * @param jieQi
      * @return
      */
@@ -132,7 +138,7 @@ public class GanZhi {
 
         try {
             int startGan = ((jieQi.getSolarYear() + 6) % 5 + 1) * 2 % 10;        // 寅月的天干序号
-            int zhi = jieQi.getSolarMonth();
+            int zhi = jieQi.getSolarMonth()+1;
             int gan = (startGan + zhi - 2) % 10;
             zhi %= 12;
 
@@ -145,4 +151,12 @@ public class GanZhi {
     }
 
 
+    @Override
+    public String toString() {
+        return "GanZhi{" +
+                "_gan=" + _gan.getChineseVal() +
+                ", _zhi=" + _zhi.getChineseVal() +
+                ", _ganzhi=" + _ganzhi +
+                '}';
+    }
 }

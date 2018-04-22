@@ -1,8 +1,9 @@
 package com.shawn.fate.tools;
 
 import com.shawn.fate.constance.Gan;
-import com.shawn.fate.constance.TenRep;
+import com.shawn.fate.constance.TenRepre;
 import com.shawn.fate.constance.Zhi;
+import com.shawn.fate.model.GanZhi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,13 +12,12 @@ public class GanZhiTool {
 
 
     /**
-     * 阳年/阴年
+     * 计算该一年是否是阳年（以交立春为界限算一年）
      * @return
      */
-    public static boolean isYangYear() {
-        throw new RuntimeException("");
+    public static boolean isYangYear(int solarYear) {
+        return GanZhi.ofYear(solarYear).getGan().getIntVal()%2 == 0;
     }
-
 
     /**
      * 根据地址得到藏干
@@ -58,7 +58,7 @@ public class GanZhiTool {
      * @param calcGan
      * @return
      */
-    public TenRep getTenRepresantOfGan(Gan birthdayGan, Gan calcGan) {
+    public static TenRepre getTenRepresantOfGan(Gan birthdayGan, Gan calcGan) {
 
         // 十神对应表
         int stemMeans[][] =
@@ -77,7 +77,7 @@ public class GanZhiTool {
         };
 
         int represent = stemMeans[birthdayGan.getIntVal()][calcGan.getIntVal()];
-        return TenRep.values()[represent];
+        return TenRepre.values()[represent];
     }
 
     /**
@@ -86,12 +86,12 @@ public class GanZhiTool {
      * @param calcZhi
      * @return
      */
-    public List<TenRep> getTenRepresantOfZhi(Gan birthdayGan, Zhi calcZhi) {
+    public static List<TenRepre> getTenRepresantOfZhi(Gan birthdayGan, Zhi calcZhi) {
         List<Gan> gans = getInnerGanFromZhi(calcZhi);
-        List<TenRep> list = new ArrayList<>(3);
+        List<TenRepre> list = new ArrayList<>(3);
 
         for (Gan gan : gans) {
-            TenRep rep = getTenRepresantOfGan(birthdayGan, gan);
+            TenRepre rep = getTenRepresantOfGan(birthdayGan, gan);
             list.add(rep);
         }
 

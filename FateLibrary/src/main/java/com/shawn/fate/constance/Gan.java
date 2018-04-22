@@ -6,7 +6,7 @@ package com.shawn.fate.constance;
 public enum Gan {
 
     JIA     (0, "甲"),
-    YI      (1, "已"),
+    YI      (1, "乙"),
     BING    (2, "丙"),
     DING    (3, "丁"),
     WU      (4, "戊"),

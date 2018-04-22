@@ -41,7 +41,7 @@ public class JieQi {
     /**
      * 根据节气年月返回节气结构
      * @param solarYear  节气年
-     * @param solarMonth 节气月
+     * @param solarMonth 节气月 1,2,3...12
      * @return
      * @throws Exception
      */
@@ -76,7 +76,7 @@ public class JieQi {
             int val = DATA_CAL.getSolarTermsValueAt(row, i);
 
             // 找到给定的时间位于哪一列（节气）中
-            if (val >= timeMark) {
+            if (val >= timeMark) {  // 只支持到时辰：如果出生时辰和交接时辰一样的话，认为进入了新的节气
                 solarMonth = (val == timeMark) ? i+1 : i;   // 月份从1开始
                 break;
             }
@@ -116,6 +116,22 @@ public class JieQi {
             newSolarMonth = 1;
             newSolarYear += 1;
         }
+
+        return new JieQi(newSolarYear, newSolarMonth);
+    }
+
+    /**
+     * 在此節氣基礎上加上n年n月得到新的節氣
+     * @param years
+     * @param months
+     * @return
+     * @throws Exception
+     */
+    public JieQi plusYearsAndMonth(int years, int months) throws Exception {
+
+        int indexMonth = (_solarMonth - 1) + months;
+        int newSolarYear = _solarYear + years + indexMonth / 12;
+        int newSolarMonth = indexMonth % 12 + 1;
 
         return new JieQi(newSolarYear, newSolarMonth);
     }

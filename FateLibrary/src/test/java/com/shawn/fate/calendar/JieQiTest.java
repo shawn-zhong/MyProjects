@@ -18,4 +18,14 @@ public class JieQiTest {
         System.out.println(jieqi2.getPreJieQi());
         System.out.println(jieqi2.getNextJieQi());
     }
+
+    @Test
+    public void TestPlus() throws Exception {
+        JieQi jieQi = JieQi.of(LocalDateTime.now());
+
+        for (int i=0; i<=13; i++) {
+            JieQi newJieqi = jieQi.plusYearsAndMonth(2, i);
+            System.out.println(newJieqi);
+        }
+    }
 }
