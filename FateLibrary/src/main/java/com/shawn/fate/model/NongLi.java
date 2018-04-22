@@ -4,6 +4,7 @@ import com.shawn.fate.constance.DATA_CAL;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 /**
@@ -15,9 +16,9 @@ public class NongLi implements Comparable{
     private int _month = 1;                  // 1..12
     private boolean _isLeapMonth = false;    // leap
     private int _dayOfMonth;                 // 1...31
-    private int _totalDaysOfMonth;                // how many days of this _month
+    private int _totalDaysOfMonth;           // how many days of this _month
 
-    private LocalDate _source;
+    private LocalDateTime _source;
 
     public NongLi() {
 
@@ -32,18 +33,18 @@ public class NongLi implements Comparable{
      * @return
      * @throws Exception
      */
-    public static NongLi of(int NongliYear, int NongliMonth, boolean isLeapMonth, int NongliDayOfMonth) throws Exception {
-        return new NongLi(NongliYear, NongliMonth, isLeapMonth, NongliDayOfMonth);
+    public static NongLi of(int NongliYear, int NongliMonth, boolean isLeapMonth, int NongliDayOfMonth, int hour, int minutes, int secs) throws Exception {
+        return new NongLi(NongliYear, NongliMonth, isLeapMonth, NongliDayOfMonth, hour, minutes, secs);
     }
 
     /**
-     * 根据提供的LocalDate信息得到一个农历日历
-     * @param date
+     * 根据提供的LocalDateTime信息得到一个农历日历
+     * @param dateTime
      * @return
      * @throws Exception
      */
-    public static NongLi of(LocalDate date) throws Exception {
-        return new NongLi(date);
+    public static NongLi of(LocalDateTime dateTime) throws Exception {
+        return new NongLi(dateTime);
     }
 
     /**
@@ -52,7 +53,7 @@ public class NongLi implements Comparable{
      * @param NongliMonth
      * @param NongliDayOfMonth
      */
-    private NongLi(int NongliYear, int NongliMonth, boolean isLeapMonth, int NongliDayOfMonth) throws Exception {
+    private NongLi(int NongliYear, int NongliMonth, boolean isLeapMonth, int NongliDayOfMonth, int hour, int minute, int secs) throws Exception {
 
         // 找出所在行数. 表哥的每一行是每一农历年的信息
         int row = NongliYear - DATA_CAL.MIN_YEAR;
@@ -80,22 +81,24 @@ public class NongLi implements Comparable{
             throw new Exception("初始化农历失败, 提供的农历信息不正确");
         }
 
-        // 计算LocalDate
+        // 计算LocalDateTime
         int indexDate = DATA_CAL.getNongValueAt(row, 0);
         LocalDate indexLocalDate = LocalDate.of(indexDate/10000, indexDate%10000/100, indexDate%100);
-        _source = indexLocalDate.plusDays(daysBetween);
+        indexLocalDate = indexLocalDate.plusDays(daysBetween);
+
+        _source = LocalDateTime.of(indexLocalDate.getYear(), indexLocalDate.getMonthValue(), indexLocalDate.getDayOfMonth(), hour, minute, secs);
 
     }
 
     /**
      * 根据LocalDate初始化农历
-     * @param date
+     * @param dateTime
      */
-    private NongLi(LocalDate date) throws Exception {
+    private NongLi(LocalDateTime dateTime) throws Exception {
 
-        int y = date.getYear();
-        int m = date.getMonth().getValue(); // 1,2,3...
-        int d = date.getDayOfMonth();
+        int y = dateTime.getYear();
+        int m = dateTime.getMonth().getValue(); // 1,2,3...
+        int d = dateTime.getDayOfMonth();
 
         int greMark = y*10000 + m*100 + d;
 
@@ -110,7 +113,7 @@ public class NongLi implements Comparable{
         // 分别计算改行第一列值的jdn和输入值的jdn，以便计算差距
         int indexDate = DATA_CAL.getNongValueAt(row, 0);
         LocalDate indexLocalDate = LocalDate.of(indexDate/10000, indexDate%10000/100, indexDate%100);
-        int daysBetween  = (int)ChronoUnit.DAYS.between(indexLocalDate, date);
+        int daysBetween  = (int)ChronoUnit.DAYS.between(indexLocalDate, dateTime.toLocalDate());
         assert (daysBetween >= 0);
 
         // 根据差距天数找出在该行的第几列
@@ -118,25 +121,25 @@ public class NongLi implements Comparable{
             int val = DATA_CAL.getNongValueAt(row, col);
             int daysOfMonth = val / 1000;
             if (daysBetween+1 <= daysOfMonth) {
-
                 _year = row + DATA_CAL.MIN_YEAR;
                 _month = val % 100;
                 _isLeapMonth = (val % 1000 / 100) == 1;
                 _dayOfMonth = daysBetween+1; // 每月从初一开始
                 _totalDaysOfMonth = daysOfMonth;
 
-                _source = date;
                 break;
             }
             daysBetween -= daysOfMonth;
         }
+
+        _source = dateTime;
     }
 
     /**
      * 得到LocalDate信息
      * @return
      */
-    public LocalDate getLocalDate() throws Exception {
+    public LocalDateTime getLocalDateTime() throws Exception {
         if (_source == null)
             throw new Exception("Failed: None of such value");
 

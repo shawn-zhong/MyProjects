@@ -62,9 +62,8 @@ public class PersonalFate {
         init(birthTime, isMale, goodArgorithm);
     }
 
-    public PersonalFate(NongLi birthMonth, int birthHour, boolean isMale, boolean goodArgorithm) throws Exception {
-        LocalDate birthday = birthMonth.getLocalDate();
-        LocalDateTime birthTime = LocalDateTime.of(birthday.getYear(), birthday.getMonthValue(), birthday.getDayOfMonth(), birthHour, 1);
+    public PersonalFate(NongLi birthMonth, boolean isMale, boolean goodArgorithm) throws Exception {
+        LocalDateTime birthTime = birthMonth.getLocalDateTime();
         init(birthTime, isMale, goodArgorithm);
     }
 
@@ -76,39 +75,39 @@ public class PersonalFate {
         long hoursAfter = ChronoUnit.HOURS.between(firstJieQi.getTransitTime(), _birthTime);
         long hoursBefore = ChronoUnit.HOURS.between(_birthTime, secondJieQi.getTransitTime());
 
-        if (hoursBefore >= 0 && hoursBefore <= 4 * 24) {
+        if (hoursBefore >= 0 && hoursBefore <= 3 * 24) {
 
             // 如果没有跨天的话，指明生于xx节气前xx个时辰 (同一天精確到時辰，因為如果顯示生於xx節氣前0天看起來很怪)
             if (_birthTime.getDayOfMonth() == secondJieQi.getTransitTime().getDayOfMonth()) {
                 long bigHours = hoursBefore/2;
-                _desc1 = String.format(Display.DESC_01_BEFORE_HOUR, Jie.getChineseName(secondJieQi.getSolarMonth()), bigHours);
 
+                _desc1 = Display.generateDesc01(false, Jie.getChineseName(secondJieQi.getSolarMonth()), 0, (int)bigHours);
                 _dayOfBirthJieqi = (int)ChronoUnit.DAYS.between(firstJieQi.getTransitTime().toLocalDate(), secondJieQi.getTransitTime().toLocalDate());
 
             } else {
                 // 如果跨天的话，指明生于xx节气前x天（精確到天就好）
                 LocalDate birthDay = _birthTime.toLocalDate();
                 LocalDate transitDate = secondJieQi.getTransitTime().toLocalDate();
-                long day = ChronoUnit.DAYS.between(birthDay, transitDate);
-                _desc1 = String.format(Display.DESC_01_BEFORE_DAYS, Jie.getChineseName(secondJieQi.getSolarMonth()), day);
+                long days = ChronoUnit.DAYS.between(birthDay, transitDate);
 
+                _desc1 = Display.generateDesc01(false, Jie.getChineseName(secondJieQi.getSolarMonth()), (int)days, 0);
                 _dayOfBirthJieqi = (int)ChronoUnit.DAYS.between(firstJieQi.getTransitTime().toLocalDate(), birthDay);
             }
         } else {
             // 如果沒有跨天的話，指明生於xx節氣後xx個時辰 （同一天精確到時辰，因為如果顯示生於xx節氣後0天看起來很奇怪）
             if (_birthTime.getDayOfMonth() == firstJieQi.getTransitTime().getDayOfMonth()) {
                 long bigHours = hoursAfter/2;
-                _desc1 = String.format(Display.DESC_01_AFTER_HOUR, Jie.getChineseName(firstJieQi.getSolarMonth()), bigHours);
 
+                _desc1 = Display.generateDesc01(true, Jie.getChineseName(firstJieQi.getSolarMonth()), 0, (int)bigHours);
                 _dayOfBirthJieqi = 0;
             } else {
                 // 如果跨天的話，指明生於xx節氣後xx天（精確到天就好）
                 LocalDate birthDay = _birthTime.toLocalDate();
                 LocalDate transitDate = firstJieQi.getTransitTime().toLocalDate();
-                long day = ChronoUnit.DAYS.between(transitDate, birthDay);
-                _desc1 = String.format(Display.DESC_01_AFTER_DAYS, Jie.getChineseName(firstJieQi.getSolarMonth()), day);
+                long days = ChronoUnit.DAYS.between(transitDate, birthDay);
 
-                _dayOfBirthJieqi = (int)day;
+                _desc1 = Display.generateDesc01(true, Jie.getChineseName(firstJieQi.getSolarMonth()), (int)days, 0);
+                _dayOfBirthJieqi = (int)days;
             }
         }
 
@@ -141,12 +140,14 @@ public class PersonalFate {
         bigHoursBetween /= 2;  // 化為時程
         long totalDaysToEngage = bigHoursBetween * 10;   // 共計要多少天上大運（一個時辰＝10天）
 
+        System.out.println("和上運節氣差n個時辰: " + bigHoursBetween);
+
         // 大運於xx年xx月xx日後上運：
         long yearsToAdd = totalDaysToEngage / 360;
         long monthsToAdd = totalDaysToEngage % 360 / 30;
         long daysToAdd = totalDaysToEngage % 30;
 
-        _desc2 = String.format("大運於%d年%d個月%d天後上運", yearsToAdd, monthsToAdd, daysToAdd);
+        _desc2 = Display.generateDesc02((int)yearsToAdd, (int)monthsToAdd, (int)daysToAdd);
 
 
         // 計算首次大運交接時刻: engageDayOfJieQi, engageJieQi
@@ -157,16 +158,16 @@ public class PersonalFate {
         JieQi engageJieQi = _birthJieqi.plusYearsAndMonth((int) yearsToAdd, (int) monthsToAdd);
 
         // 每逢xx之年交托
-        Gan transitGan1 = GanZhi.ofYear(engageJieQi.getSolarYear()).getGan();
-        Gan transitGan2 = GanZhi.ofYear(engageJieQi.getSolarYear() + 5).getGan();
-        String transitGanStr = String.format("%s%s", transitGan1.getChineseVal(), transitGan2.getChineseVal());
-
-        _desc3 = String.format("每逢%s年%s後%d天交脫", transitGanStr, Jie.getChineseName(engageJieQi.getSolarMonth()), engageDayOfJieQi);
+        _desc3 = Display.generateDesc03(engageJieQi.getSolarYear(), engageJieQi.getSolarMonth(), (int)engageDayOfJieQi);
 
         System.out.println(_desc2);
         System.out.println(_desc3);
     }
 
+    /**
+     * 使用精準算法進行計算
+     * @throws Exception
+     */
     private void generatetDesc02And03Precisely() throws Exception {
         /* 基本計算方法：
         1. 如果是 男命生於陽年（甲年，丙年..），女命生於陰年（乙年，丁年..），則順排（順到下一個節氣）, 否則逆排 (逆到上一個節氣)
@@ -176,34 +177,40 @@ public class PersonalFate {
         5. 計算交接年/節氣
          */
 
-        boolean isYangYear = GanZhiTool.isYangYear(_birthJieqi.getSolarMonth());
+        boolean isYangYear = GanZhiTool.isYangYear(_birthJieqi.getSolarYear());
         boolean forwardCalc = (_isMale && isYangYear) || (!_isMale && !isYangYear);
 
-        long minutesBetween = forwardCalc ? ChronoUnit.MINUTES.between(_birthJieqi.getTransitTime(), _birthTime) : ChronoUnit.HOURS.between(_birthTime, _birthJieqi.getNextJieQi().getTransitTime());
+        long minutesBetween = forwardCalc ?
+                ChronoUnit.HOURS.between(_birthTime, _birthJieqi.getNextJieQi().getTransitTime()) :
+                ChronoUnit.MINUTES.between(_birthJieqi.getTransitTime(), _birthTime);
+
+        System.out.println("和上運節氣差n個時辰: " + minutesBetween/60.0/2.0);
+
         long minutesOfBirthJie = ChronoUnit.MINUTES.between(_birthJieqi.getTransitTime(), _birthJieqi.getNextJieQi().getTransitTime());
-        float minuteRepresentDays = 365 * 10.0f / minutesOfBirthJie;
+        float minuteRepresentDays = (365.2422f * 10.0f)/ minutesOfBirthJie;
+
+        System.out.println(String.format("當月多少天：%f, 每個時辰代表天數: %f", minutesOfBirthJie /60.0/24.0,  minuteRepresentDays*60.0*2.0));
 
         // 上運要經過這麼多天：
-        int daysToAdd = (int)(minuteRepresentDays * minutesBetween);
+        float daysToAdd = minuteRepresentDays * minutesBetween;
+
+        //
+        System.out.println(String.format("上運要經過%d天%d小時", (int)daysToAdd, (int)((daysToAdd - (int)daysToAdd)*24)));
 
         // 計算首次上運時間點
-        LocalDateTime engageDatetime = _birthTime.plusDays(daysToAdd);
+        LocalDateTime engageDatetime = _birthTime.plusDays((int)daysToAdd).plusHours((int)((daysToAdd - (int)daysToAdd)*24));
 
         int y = (int)ChronoUnit.YEARS.between(_birthTime, engageDatetime);
         int m = (int)ChronoUnit.MONTHS.between(_birthTime, engageDatetime.minusYears(y));
         int d = (int)ChronoUnit.DAYS.between(_birthTime, engageDatetime.minusYears(y).minusMonths(m));
-        _desc2 = String.format("大運於%d年%d個月%d天後上運", y , m, d);
+        _desc2 = Display.generateDesc02(y, m, d);
 
         // 首次上運節氣以及日子
         JieQi engageJieqi = JieQi.of(engageDatetime);
         int dayOfEngageJieqi = (int)ChronoUnit.DAYS.between(engageJieqi.getTransitTime(), engageDatetime);
 
         // 每逢xx之年交托
-        Gan transitGan1 = GanZhi.ofYear(engageJieqi.getSolarYear()).getGan();
-        Gan transitGan2 = GanZhi.ofYear(engageJieqi.getSolarYear() + 5).getGan();
-        String transitGanStr = String.format("%s%s", transitGan1.getChineseVal(), transitGan2.getChineseVal());
-
-        _desc3 = String.format("每逢%s年%s後%d天交脫", transitGanStr, Jie.getChineseName(engageJieqi.getSolarMonth()), dayOfEngageJieqi);
+        _desc3 = Display.generateDesc03(engageJieqi.getSolarYear(), engageJieqi.getSolarMonth(), (int)dayOfEngageJieqi);
 
         System.out.println(_desc2);
         System.out.println(_desc3);
