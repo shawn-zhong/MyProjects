@@ -44,7 +44,6 @@ public class PersonalFate {
         _dayGanZhi = GanZhi.ofDate(birthTime.toLocalDate());
         _hourGanzhi = GanZhi.ofHour(birthTime);
 
-
         System.out.println("initiating personal , birth JieQi is " + _birthJieqi.toString());
         System.out.println("initiating personal , GanZhi of year, month, day, hour is " + _yearGanZhi.toString() + " " + _monthGanZhi.toString() + " " + _dayGanZhi.toString() + " " + _hourGanzhi.toString() );
 
@@ -66,7 +65,6 @@ public class PersonalFate {
         LocalDateTime birthTime = birthMonth.getLocalDateTime();
         init(birthTime, isMale, goodArgorithm);
     }
-
 
     private void generateDesc01() throws Exception {
         JieQi firstJieQi = _birthJieqi;
