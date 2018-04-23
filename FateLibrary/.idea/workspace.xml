@@ -16,7 +16,7 @@
         <entry file="file://$PROJECT_DIR$/src/test/java/com/shawn/fate/calendar/GanZhiTest.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="733">
-              <caret line="51" column="9" lean-forward="true" selection-start-line="51" selection-start-column="9" selection-end-line="51" selection-end-column="9" />
+              <caret line="51" column="9" lean-forward="false" selection-start-line="51" selection-start-column="9" selection-end-line="51" selection-end-column="9" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -42,7 +42,7 @@
         <entry file="file://$PROJECT_DIR$/src/test/java/com/shawn/fate/calendar/NongliTest.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="525">
-              <caret line="40" column="83" lean-forward="true" selection-start-line="40" selection-start-column="83" selection-end-line="40" selection-end-column="83" />
+              <caret line="40" column="83" lean-forward="false" selection-start-line="40" selection-start-column="83" selection-end-line="40" selection-end-column="83" />
               <folding />
             </state>
           </provider>
@@ -52,7 +52,7 @@
         <entry file="file://$PROJECT_DIR$/src/test/java/com/shawn/fate/calendar/PersonalTest.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="180">
-              <caret line="12" column="0" lean-forward="true" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+              <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -74,7 +74,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/com/shawn/fate/tools/GanZhiTool.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="761">
-              <caret line="60" column="18" lean-forward="true" selection-start-line="60" selection-start-column="18" selection-end-line="60" selection-end-column="18" />
+              <caret line="60" column="18" lean-forward="false" selection-start-line="60" selection-start-column="18" selection-end-line="60" selection-end-column="18" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#377#378#0" expanded="true" />
@@ -88,7 +88,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/com/shawn/fate/tools/PersonalFate.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="639">
-              <caret line="204" column="0" lean-forward="true" selection-start-line="204" selection-start-column="0" selection-end-line="204" selection-end-column="0" />
+              <caret line="204" column="0" lean-forward="false" selection-start-line="204" selection-start-column="0" selection-end-line="204" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -112,7 +112,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/com/shawn/fate/constance/Display.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="166">
-              <caret line="30" column="9" lean-forward="true" selection-start-line="30" selection-start-column="9" selection-end-line="30" selection-end-column="9" />
+              <caret line="30" column="9" lean-forward="false" selection-start-line="30" selection-start-column="9" selection-end-line="30" selection-end-column="9" />
               <folding />
             </state>
           </provider>
@@ -1059,7 +1059,7 @@
     <entry file="file://$PROJECT_DIR$/src/test/java/com/shawn/fate/calendar/GanZhiTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="733">
-          <caret line="51" column="9" lean-forward="true" selection-start-line="51" selection-start-column="9" selection-end-line="51" selection-end-column="9" />
+          <caret line="51" column="9" lean-forward="false" selection-start-line="51" selection-start-column="9" selection-end-line="51" selection-end-column="9" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1097,7 +1097,7 @@
     <entry file="file://$PROJECT_DIR$/src/test/java/com/shawn/fate/calendar/PersonalTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
-          <caret line="12" column="0" lean-forward="true" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1107,7 +1107,7 @@
     <entry file="file://$PROJECT_DIR$/src/test/java/com/shawn/fate/calendar/NongliTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="525">
-          <caret line="40" column="83" lean-forward="true" selection-start-line="40" selection-start-column="83" selection-end-line="40" selection-end-column="83" />
+          <caret line="40" column="83" lean-forward="false" selection-start-line="40" selection-start-column="83" selection-end-line="40" selection-end-column="83" />
           <folding />
         </state>
       </provider>
@@ -1115,7 +1115,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/com/shawn/fate/tools/GanZhiTool.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="761">
-          <caret line="60" column="18" lean-forward="true" selection-start-line="60" selection-start-column="18" selection-end-line="60" selection-end-column="18" />
+          <caret line="60" column="18" lean-forward="false" selection-start-line="60" selection-start-column="18" selection-end-line="60" selection-end-column="18" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#377#378#0" expanded="true" />
@@ -1127,7 +1127,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/com/shawn/fate/tools/PersonalFate.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="639">
-          <caret line="204" column="0" lean-forward="true" selection-start-line="204" selection-start-column="0" selection-end-line="204" selection-end-column="0" />
+          <caret line="204" column="0" lean-forward="false" selection-start-line="204" selection-start-column="0" selection-end-line="204" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1147,7 +1147,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/com/shawn/fate/constance/Display.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="166">
-          <caret line="30" column="9" lean-forward="true" selection-start-line="30" selection-start-column="9" selection-end-line="30" selection-end-column="9" />
+          <caret line="30" column="9" lean-forward="false" selection-start-line="30" selection-start-column="9" selection-end-line="30" selection-end-column="9" />
           <folding />
         </state>
       </provider>
