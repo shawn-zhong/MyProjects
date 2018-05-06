@@ -1,8 +1,7 @@
 package com.shawn.fate.model;
 
-import com.shawn.fate.constance.DATA_CAL;
+import com.shawn.fate.constance.DATA_TIMES;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class JieQi {
@@ -20,22 +19,24 @@ public class JieQi {
         this._solarYear = solarYear;
         this._solarMonth = solarMonth;
 
-        if (solarYear < DATA_CAL.MIN_YEAR || solarYear > DATA_CAL.MAX_YEAR)
+        if (solarYear < DATA_TIMES.MIN_YEAR || solarYear > DATA_TIMES.MAX_YEAR)
             throw new Exception("给出的时间超出查询范围，支持1600～2134");
 
         if (solarMonth < 1 || solarMonth > 12)
             throw new IllegalArgumentException("solarMonth must between 1..12");
 
-        int row = solarYear - DATA_CAL.MIN_YEAR;
+        int row = solarYear - DATA_TIMES.MIN_YEAR;
         int col = solarMonth - 1;
 
-        // 查找到交接时刻（到小时）
-        int timeMark = DATA_CAL.getSolarTermsValueAt(row, col);
-        int year = timeMark/1000000;
-        int month = timeMark%1000000/10000;
-        int day = timeMark%10000/100;
-        int hour = timeMark%100;
-        _transitTime = LocalDateTime.of(year, month, day, hour, 0, 0);
+        // 查找到交接时刻（到分钟） : e.g. 1859 02 04 15 13L
+        long timeMark = DATA_TIMES.getSolarTermsValueAt(row, col);
+        int year = (int)(timeMark/100000000L);
+        int month = (int)(timeMark%100000000/1000000L);
+        int day = (int)(timeMark%1000000/10000L);
+        int hour = (int)(timeMark%10000/100L);
+        int min = (int)(timeMark%100);
+
+        _transitTime = LocalDateTime.of(year, month, day, hour, min, 0);
     }
 
     /**
@@ -60,20 +61,21 @@ public class JieQi {
         int m = dateTime.getMonthValue();
         int d = dateTime.getDayOfMonth();
         int h = dateTime.getHour();
+        int minute = dateTime.getMinute();
 
-        int timeMark = y * 1000000 + m * 10000 + d * 100 + h;
-        if (timeMark < DATA_CAL.getSolarTermsValueAt(0, 0) ||
-                timeMark > DATA_CAL.getSolarTermsValueAt(DATA_CAL.TERMS_COUNT, 11)) {
+        long timeMark = y * 100000000L + m * 1000000L + d * 10000L + h*100L + minute;
+        if (timeMark < DATA_TIMES.getSolarTermsValueAt(0, 0) ||
+                timeMark > DATA_TIMES.getSolarTermsValueAt(DATA_TIMES.MAX_YEAR-DATA_TIMES.MIN_YEAR, 11)) {
             throw new Exception("给出的时间超出查询范围，支持1600020417～2135010603");
         }
 
-        int row = y - DATA_CAL.MIN_YEAR;
-        if (timeMark < DATA_CAL.getSolarTermsValueAt(row, 0))
+        int row = y - DATA_TIMES.MIN_YEAR;
+        if (timeMark < DATA_TIMES.getSolarTermsValueAt(row, 0))
             row -= 1;
 
         int solarMonth = 0;
         for (int i=0; i<12; i++) {
-            int val = DATA_CAL.getSolarTermsValueAt(row, i);
+            long val = DATA_TIMES.getSolarTermsValueAt(row, i);
 
             // 找到给定的时间位于哪一列（节气）中
             if (val >= timeMark) {  // 只支持到时辰：如果出生时辰和交接时辰一样的话，认为进入了新的节气
@@ -82,7 +84,7 @@ public class JieQi {
             }
         }
 
-        return new JieQi(DATA_CAL.MIN_YEAR + row, solarMonth);
+        return new JieQi(DATA_TIMES.MIN_YEAR + row, solarMonth);
     }
 
     /**

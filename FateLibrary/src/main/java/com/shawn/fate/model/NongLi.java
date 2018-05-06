@@ -1,6 +1,6 @@
 package com.shawn.fate.model;
 
-import com.shawn.fate.constance.DATA_CAL;
+import com.shawn.fate.constance.DATA_TIMES;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.time.LocalDate;
@@ -56,13 +56,13 @@ public class NongLi implements Comparable{
     private NongLi(int NongliYear, int NongliMonth, boolean isLeapMonth, int NongliDayOfMonth, int hour, int minute, int secs) throws Exception {
 
         // 找出所在行数. 表哥的每一行是每一农历年的信息
-        int row = NongliYear - DATA_CAL.MIN_YEAR;
+        int row = NongliYear - DATA_TIMES.MIN_YEAR;
 
         // 根据农历年月日的描述找出对应的列，信息正确的话一定能找到
         int daysBetween = 0;
         boolean found = false;
         for (int col=1; col<=13; col++) {
-            int val = DATA_CAL.getNongValueAt(row, col);
+            int val = DATA_TIMES.getNongValueAt(row, col);
 
             int month = val % 100;
             boolean isLeap = (val % 1000 / 100) == 1;
@@ -82,7 +82,7 @@ public class NongLi implements Comparable{
         }
 
         // 计算LocalDateTime
-        int indexDate = DATA_CAL.getNongValueAt(row, 0);
+        int indexDate = DATA_TIMES.getNongValueAt(row, 0);
         LocalDate indexLocalDate = LocalDate.of(indexDate/10000, indexDate%10000/100, indexDate%100);
         indexLocalDate = indexLocalDate.plusDays(daysBetween);
 
@@ -102,26 +102,26 @@ public class NongLi implements Comparable{
 
         int greMark = y*10000 + m*100 + d;
 
-        if (greMark < DATA_CAL.getNongValueAt(0, 0) || y > DATA_CAL.MAX_YEAR)
+        if (greMark < DATA_TIMES.getNongValueAt(0, 0) || y > DATA_TIMES.MAX_YEAR)
             throw new Exception("初始化农历失败，不在提供范围内（1600～2134）");
 
         // 找出具体在表中的哪一行
-        int row = y - DATA_CAL.MIN_YEAR;
-        if (greMark < DATA_CAL.getNongValueAt(row, 0))  // 注意col0的起始时间可能是新历的二月
+        int row = y - DATA_TIMES.MIN_YEAR;
+        if (greMark < DATA_TIMES.getNongValueAt(row, 0))  // 注意col0的起始时间可能是新历的二月
             row -= 1;
 
         // 分别计算改行第一列值的jdn和输入值的jdn，以便计算差距
-        int indexDate = DATA_CAL.getNongValueAt(row, 0);
+        int indexDate = DATA_TIMES.getNongValueAt(row, 0);
         LocalDate indexLocalDate = LocalDate.of(indexDate/10000, indexDate%10000/100, indexDate%100);
         int daysBetween  = (int)ChronoUnit.DAYS.between(indexLocalDate, dateTime.toLocalDate());
         assert (daysBetween >= 0);
 
         // 根据差距天数找出在该行的第几列
         for (int col=1; col<=13; col++) {
-            int val = DATA_CAL.getNongValueAt(row, col);
+            int val = DATA_TIMES.getNongValueAt(row, col);
             int daysOfMonth = val / 1000;
             if (daysBetween+1 <= daysOfMonth) {
-                _year = row + DATA_CAL.MIN_YEAR;
+                _year = row + DATA_TIMES.MIN_YEAR;
                 _month = val % 100;
                 _isLeapMonth = (val % 1000 / 100) == 1;
                 _dayOfMonth = daysBetween+1; // 每月从初一开始
