@@ -1,5 +1,6 @@
 package com.shawn.fate.tools;
 
+import com.shawn.fate.calendar.TimeTool;
 import com.shawn.fate.constance.Display;
 import com.shawn.fate.constance.Gan;
 import com.shawn.fate.constance.Jie;
@@ -61,17 +62,18 @@ public class PersonalFate {
         init(birthTime, isMale, goodArgorithm);
     }
 
+    /* 不单独提供农历算法，在外层把农历先化为阳历
     public PersonalFate(NongLi birthMonth, boolean isMale, boolean goodArgorithm) throws Exception {
         LocalDateTime birthTime = birthMonth.getLocalDateTime();
         init(birthTime, isMale, goodArgorithm);
-    }
+    }*/
 
     private void generateDesc01() throws Exception {
         JieQi firstJieQi = _birthJieqi;
         JieQi secondJieQi = firstJieQi.getNextJieQi();
 
-        long hoursAfter = ChronoUnit.HOURS.between(firstJieQi.getTransitTime(), _birthTime);
-        long hoursBefore = ChronoUnit.HOURS.between(_birthTime, secondJieQi.getTransitTime());
+        long hoursAfter = ChronoUnit.HOURS.between(TimeTool.getBigHourLocalTime(firstJieQi.getTransitTime()), _birthTime);
+        long hoursBefore = ChronoUnit.HOURS.between(_birthTime, TimeTool.getBigHourLocalTime(secondJieQi.getTransitTime()));
 
         if (hoursBefore >= 0 && hoursBefore <= 3 * 24) {
 
@@ -131,12 +133,12 @@ public class PersonalFate {
         boolean isYangYear = GanZhiTool.isYangYear(_birthJieqi.getSolarYear());
         boolean forwardCalc = (_isMale && isYangYear) || (!_isMale && !isYangYear);
 
-        long bigHoursBetween = forwardCalc ?
-                        ChronoUnit.HOURS.between(_birthTime, _birthJieqi.getNextJieQi().getTransitTime()) :     // 如果是順排，計算出生時間到下一個節氣的時間跨度
-                        ChronoUnit.HOURS.between(_birthJieqi.getTransitTime(), _birthTime);                     // 如果是逆排，計算出生時間到上一個節氣的時間跨度
+        float bigHoursBetween = forwardCalc ?
+                        ChronoUnit.HOURS.between(_birthTime, TimeTool.getBigHourLocalTime(_birthJieqi.getNextJieQi().getTransitTime())) :     // 如果是順排，計算出生時間到下一個節氣的時間跨度
+                        ChronoUnit.HOURS.between(TimeTool.getBigHourLocalTime(_birthJieqi.getTransitTime()), _birthTime);                     // 如果是逆排，計算出生時間到上一個節氣的時間跨度
 
         bigHoursBetween /= 2;  // 化為時程
-        long totalDaysToEngage = bigHoursBetween * 10;   // 共計要多少天上大運（一個時辰＝10天）
+        long totalDaysToEngage = (int)(bigHoursBetween * 10);   // 共計要多少天上大運（一個時辰＝10天）
 
         System.out.println("和上運節氣差n個時辰: " + bigHoursBetween);
 
@@ -179,10 +181,10 @@ public class PersonalFate {
         boolean forwardCalc = (_isMale && isYangYear) || (!_isMale && !isYangYear);
 
         long minutesBetween = forwardCalc ?
-                ChronoUnit.HOURS.between(_birthTime, _birthJieqi.getNextJieQi().getTransitTime()) :
+                ChronoUnit.MINUTES.between(_birthTime, _birthJieqi.getNextJieQi().getTransitTime()) :
                 ChronoUnit.MINUTES.between(_birthJieqi.getTransitTime(), _birthTime);
 
-        System.out.println("和上運節氣差n個時辰: " + minutesBetween/60.0/2.0);
+        System.out.println(String.format("和上運節氣差%f個時辰(%d分钟) ", minutesBetween/60.0/2.0, minutesBetween));
 
         long minutesOfBirthJie = ChronoUnit.MINUTES.between(_birthJieqi.getTransitTime(), _birthJieqi.getNextJieQi().getTransitTime());
         float minuteRepresentDays = (365.2422f * 10.0f)/ minutesOfBirthJie;

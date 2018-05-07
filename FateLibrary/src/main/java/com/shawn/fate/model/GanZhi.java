@@ -1,6 +1,6 @@
 package com.shawn.fate.model;
 
-import com.shawn.fate.calendar.CalendarBase;
+import com.shawn.fate.calendar.TimeTool;
 import com.shawn.fate.constance.Gan;
 import com.shawn.fate.constance.Zhi;
 
@@ -80,7 +80,7 @@ public class GanZhi {
             int m = date.getMonthValue();
             int d = date.getDayOfMonth();
 
-            int jdn = CalendarBase.localDateToJdn(date);
+            int jdn = TimeTool.localDateToJdn(date);
             return new GanZhi((jdn + 49) % 60);
         } catch (Exception e) {
             e.printStackTrace();

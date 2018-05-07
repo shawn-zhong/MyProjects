@@ -1,7 +1,9 @@
 package com.shawn.fate.calendar;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
-public class CalendarBase {
+public class TimeTool {
 
     /*
      * Input parameters:
@@ -55,5 +57,24 @@ public class CalendarBase {
         int year = b*100 + d - 4800 + m/10;
 
         return LocalDate.of(year, month, day);
+    }
+
+    /**
+     * 将输入时间与时辰对齐（胡一鸣方法的节气时间只精确到时辰）
+     * @param theTime
+     * @return
+     */
+    public static LocalDateTime getBigHourLocalTime(LocalDateTime theTime) {
+
+        int h = theTime.getHour();
+        // 0 , 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23
+
+        int bigH = 0;
+
+        if (h!=0 && h%2==0) {
+            h = h-1;
+        }
+
+        return LocalDateTime.of(theTime.getYear(), theTime.getMonthValue(), theTime.getDayOfMonth(), h, 0, 0);
     }
 }
